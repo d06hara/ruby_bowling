@@ -161,11 +161,8 @@ def playball
     throw(array_score, now_frame)
     puts "現在のフレームスコアは#{array_score}：(加点なし)"
 
-    # 4.今回のフレームスコアを,スコア配列に代入
-    # frame_score = score1 + score2
+    # 今回のフレームスコアを,スコア配列に代入
     frame_scores[i] = array_score
-    # puts "#{frame_count}回目のスコアは#{frame_scores[i]}"
-    # puts "#{i + 1}フレーム目までのスコアは#{frame_scores}"
 
     # ---------------------------
     # 判定 (コメントのみ、ロジックには影響しない)
@@ -217,9 +214,6 @@ def playball
 
     puts "#{i + 1}フレーム目までの暫定スコアは#{frame_scores}"
 
-    # 5.合計スコアに加算していく
-    # total_score += frame_scores[i]
-
     # 6.出力用スコアボードに文字列として連結していく
     # score_board += "   #{frame_scores[i]}   |"
 
@@ -232,6 +226,7 @@ def playball
   # 各フレームで合計を計算し、totalscoreに入れる
   for k in (0..9)
     total_score += frame_scores[k].inject(:+)
+    score_board += "　　#{frame_scores[k].inject(:+)}　|"
   end
 
   puts "合計スコアは#{total_score}"
