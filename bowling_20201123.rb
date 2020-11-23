@@ -1,12 +1,3 @@
-# ボウリングゲーム
-
-# --ルール
-# 全１０フレーム
-# 1~9フレーム：２投、10フレーム：３投
-# 1~9フレームは、ストライクだったら1投,1~9フレームは、ストライクだったら、後の2投を加算する,1~9フレームは、スペアだったら、後の1投を加算する
-# 10 フレームは、1,2投目で、10ピン倒したら、3投目が投げられる。
-
-
 # ----------------
 # 定数の準備
 #-----------------
@@ -35,56 +26,57 @@ SPARE_SCORE = 10
 # 投球(1-9フレーム)
 # ・フレームによって何投投げるかの処理
 # ・1~9フレームは最大２投、10フレームは必ず3投投げる
-# ・この処理のアウトプットは[[],[],......[]] 中は10個の配列
+# ・戻り値は[[],[],......[]] の配列、戻り値の数によって場合分け
 # ----------------
 def throw(array_score, now_frame)
-  # １投目の処理(全フレーム共通)
-  score1 = rand(0..MAX_PINS)
-  # score1 = 10 # テスト用
-  # array_scoreにpush
-  array_score.push(score1)
 
-  # ２投目以降の処理が1-9フレームと10フレームで異なるので場合分け
+  # リファクタリングドラフト
   if now_frame < MAX_FRAME
-    # ストライク以外だった場合に２投目に進む
-    if score1 != STRIKE
+    # １投目の処理(全フレーム共通)
+    score1 = rand(0..MAX_PINS)
+    if score1 == STRIKE
+      return array_score.push(score1)
+    else
       # 残ったピンを計算して変数に代入
       remaining_pins = MAX_PINS - score1
       # 2投目を投げてarray_scoreにpush
       score2 = rand(0..remaining_pins)
-      array_score.push(score2)
+      return array_score.push(score1).push(score2)
     end
 
-  else # 10フレーム目の処理
+  else 
+    score1 = rand(0..MAX_PINS)
     if score1 != STRIKE  # １本目がストライク以外の場合 →２本目は１本目の残り、３本目は最大本数
       # 残ったピンを計算して変数に代入
       remaining_pins = MAX_PINS - score1
       #２投目(１本目の残り)と３投目(最大本数)を投げる
       score2 = rand(0..remaining_pins)
+      # remaining_throw(score1)
       score3 = rand(0..MAX_PINS)
-
     else # 1本目がストライクだった場合　→２本目は最大本数
-      #2投目を投げる
       score2 = rand(0..MAX_PINS)
-      if score2 != STRIKE #２本目がストライク以外の場合
-        # ３本目の処理(２本目の残り)
+      if score2 != STRIKE #２本目がストライク以外の場合、３本目の処理(２本目の残り)
         remaining_pins = MAX_PINS - score2
         score3 = rand(0..remaining_pins)
       else #２本目がストライクの場合
-        #３本目の処理
         score3 = rand(0..MAX_PINS)
       end
     end
-    # フルスコアテスト用
-    # score2 = STRIKE
-    # score3 = STRIKE
-    array_score.push(score2).push(score3)
+    return array_score.push(score1).push(score2).push(score3)
   end
 end
 
 # ----------------
+# ストライクでない場合の投球メソッド
+# ----------------
+def remaining_throw(score1)
+  remaining_pins = MAX_PINS - score1
+  score2 = rand(0..remaining_pins)
+end
+
+# ----------------
 # ジャッジ
-# ・現在のフレームがスペアストライクのコメントを出力だけの処理(ロジックには影響しない)
+# ・現在のフレームがスペアストライクのコメントを出力だけの処理、戻り値なし(ロジックには影響しない)
 # ----------------
 def judge(array_score)
   if array_score.length == STRIKE_ELEMENT # 要素数が1だった場合=ストライクの場合   
@@ -170,10 +162,8 @@ def playball
     judge(array_score)
 
     # ---------------------------
-    # 加点の処理
+    # 加点の処理(３フレーム以降に処理を行う)
     # --------------------------- 
-
-    # ３フレーム以降の処理(1-8フレームの点数決定)
     if now_frame >= 3
       
       # ２つ前がストライクの場合
@@ -196,8 +186,6 @@ def playball
     end
 
     # 10フレームの時のみ(9フレームの点数決定)
-    # 9フレームがストライクだった場合、10フレームの１投目と２投目を加える
-    # 9フレームがスペアだった場合,10フレームの１投目を加える
     if now_frame == MAX_FRAME
       # 9フレームがストライクだった場合
       if frame_scores[previous_frame_index].length == STRIKE_ELEMENT
@@ -213,11 +201,6 @@ def playball
     end
 
     puts "#{i + 1}フレーム目までの暫定スコアは#{frame_scores}"
-
-    # 6.出力用スコアボードに文字列として連結していく
-    # score_board += "   #{frame_scores[i]}   |"
-
-
     puts '------------------------'
     puts "#{now_frame}フレーム目を終了します"
     puts '------------------------'
@@ -231,7 +214,6 @@ def playball
 
   puts "合計スコアは#{total_score}"
   score_board += "　　#{total_score}　　|"
-
 
   # ======================
   # 結果出力
