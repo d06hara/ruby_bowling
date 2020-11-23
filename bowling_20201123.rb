@@ -7,19 +7,6 @@
 # 10 フレームは、1,2投目で、10ピン倒したら、3投目が投げられる。
 
 
-# class Player
-#   def name
-#     'Player B'
-#   end
-# end
-
-class Player
-  def name
-    name_tag = rand(0..10)
-    "Player #{name_tag}"
-  end
-end
-
 # ----------------
 # 定数の準備
 #-----------------
@@ -120,14 +107,6 @@ def playball
 
   player = "Player A"
 
-  pl = Player.new
-  player = pl.name
-  puts player
-
-  pl = Player.new
-  player = pl.name
-  puts player
-
   # =================
   # 変数
   # =================
@@ -177,11 +156,10 @@ def playball
     puts '------------------------'
     
     # ------------------
-    # 球を投げる
+    # 投球
     # ------------------
     throw(array_score, now_frame)
     puts "現在のフレームスコアは#{array_score}：(加点なし)"
-
 
     # 4.今回のフレームスコアを,スコア配列に代入
     # frame_score = score1 + score2
@@ -189,59 +167,34 @@ def playball
     # puts "#{frame_count}回目のスコアは#{frame_scores[i]}"
     # puts "#{i + 1}フレーム目までのスコアは#{frame_scores}"
 
-
-
     # ---------------------------
     # 判定 (コメントのみ、ロジックには影響しない)
     # --------------------------- 
     judge(array_score)
 
-
     # ---------------------------
     # 加点の処理
-    # ・１フレームの点数が決まるのは３フレームが終わってから、同様に8フレームまでが同じ処理
-
-    # ・1-8フレームまでの点数の決め方、３-9フレームで場合分け
-    # ・１フレームと２フレームでは特に何もしない
-    # ・３フレーム以降で加点の処理を行う
-    # ・２つ前のフレームの結果と１つ前のフレームの結果を判定
-    # ・２つ前がストライクかつ１つ前がストライクの場合、２つ前のフレームスコアに１つ前の点数（ストライク）と現在の点数（ストライク）を入れる
-    # ・２つ前がストライクかつ１つ前がスペアの場合、２つ前のフレームスコアに１つ前の２投の点数を加える
-    # ・２つ前がスペアだった場合、２つ前のフレームスコアに１つ前の１投目を加える
-    # ・２つ前がストライクでもスペアでもない場合、加点なし
-    # ・２つ前がストライクかスペアかそうでもないかで場合分け、
-    # 
-    # ・10フレームだけ別の処理
-    # ・8フレームの点数は上の処理と同じ,
-    # ・９フレームの点数は
     # --------------------------- 
 
     # ３フレーム以降の処理(1-8フレームの点数決定)
     if now_frame >= 3
       
-      # ２つ前のフレームパターンで場合分け
       # ２つ前がストライクの場合
       if frame_scores[two_before_frame_index].length == STRIKE_ELEMENT
-        puts '２つ前のフレームがストライクです'
-        # １つ前のフレームパターンで場合分け
-        # １つ前がストライクの場合(１投しか投げてない)
-        if frame_scores[previous_frame_index].length == STRIKE_ELEMENT
+        if frame_scores[previous_frame_index].length == STRIKE_ELEMENT # １つ前がストライクの場合(１投しか投げてない)
           puts '２つ前のフレームがストライクでかつ１つ前のフレームがストライクなので、２つ前のフレームに１つ前のフレームスコアと現在のフレームの１投目を加点します'
           frame_scores[two_before_frame_index].push(STRIKE).push(score1)
-        else
-        # １つ前がストライクではない場合(２投投げた)
+        else # １つ前がストライクではない場合(２投投げた)
           puts '２つ前がストライクでかつ１つ前がストライクでないので、２つ前のフレームに１つ前のフレームスコアを加点します'
           frame_scores[two_before_frame_index].concat(frame_scores[previous_frame_index])
         end
 
       # ２つ前がスペアの場合
       elsif frame_scores[two_before_frame_index].length == SPARE_ELEMENT && frame_scores[two_before_frame_index].inject(:+) == SPARE_SCORE
-        puts '２つ前のフレームがスペアです'
         puts "２つ前のフレームがスペアなので、２つ前のフレームに１つ前の１投目の点数を加点します"
         frame_scores[two_before_frame_index].push(frame_scores[previous_frame_index][0])
-      else
-        puts '２つ前のフレームはストライクでもスペアでもありません'
-        puts '２つ前のフレームに加点はありません'
+      else # ２つ前がストライクでもスペアでもない場合
+        puts '２つ前のフレームはストライクでもスペアでもないので加点はありません'
       end
     end
 
