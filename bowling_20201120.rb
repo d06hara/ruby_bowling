@@ -30,7 +30,14 @@ MAX_FRAME = 10
 MAX_PINS = 10
 # ストライク
 STRIKE = 10
-
+# ストライクだった時の要素数 = 1
+STRIKE_ELEMENT = 1
+# ストライクだった時のスコア = 10
+STRIKE_SCORE = 10
+# スペアだった時の要素数 = 2
+SPARE_ELEMENT = 2
+# スペアだった時のスコア = 10
+SPARE_SCORE = 10
 
 
 # ----------------
@@ -138,6 +145,9 @@ def playball
       # 10フレーム目の処理
       # １投目を投げる（スコアは0-10)
       score1 = rand(0..MAX_PINS)
+
+      # score1 = 10 # テスト用
+
       # array_scoreにpush
       array_score.push(score1)
       # ストライク以外の場合
@@ -154,6 +164,10 @@ def playball
       else#1本目がストライクだった場合
         #2投目を投げる
         score2 = rand(0..MAX_PINS)
+
+        # score2 = 10 # テスト用
+
+        
         array_score.push(score2)
         
         if score2 != STRIKE #２本目がストライク以外の場合
@@ -166,6 +180,8 @@ def playball
         else #２本目がストライクの場合
           #３本目の処理
           score3 = rand(0..MAX_PINS)
+          # score3 = 10 # テスト用
+
           array_score.push(score3)
         end
 
@@ -185,7 +201,7 @@ def playball
 
 
     # ---------------------------
-    # 現在のフレームがスペアストライクのコメントを出力
+    # 現在のフレームがスペアストライクのコメントを出力だけの処理(ロジックには影響しない)
     # --------------------------- 
     # 要素数が1だった場合=ストライクの場合
     if array_score.length == 1
@@ -197,71 +213,149 @@ def playball
 
     # それ以外の場合
     else
-      puts "・・・・・・"
+      puts "ストライクでもスペアでもない"
     end
 
+
+
+    # ---------------------------
+    # 加点の処理
+    # ・１フレームの点数が決まるのは３フレームが終わってから、同様に8フレームまでが同じ処理
+
+    # ・1-8フレームまでの点数の決め方、３-9フレームで場合分け
+    # ・１フレームと２フレームでは特に何もしない
+    # ・３フレーム以降で加点の処理を行う
+    # ・２つ前のフレームの結果と１つ前のフレームの結果を判定
+    # ・２つ前がストライクかつ１つ前がストライクの場合、２つ前のフレームスコアに１つ前の点数（ストライク）と現在の点数（ストライク）を入れる
+    # ・２つ前がストライクかつ１つ前がスペアの場合、２つ前のフレームスコアに１つ前の２投の点数を加える
+    # ・２つ前がスペアだった場合、２つ前のフレームスコアに１つ前の１投目を加える
+    # ・２つ前がストライクでもスペアでもない場合、加点なし
+    # ・２つ前がストライクかスペアかそうでもないかで場合分け、
+    # 
+    # ・10フレームだけ別の処理
+    # ・8フレームの点数は上の処理と同じ,
+    # ・９フレームの点数は
+    # --------------------------- 
+
+    # ３フレーム以降の処理(1-8フレームの点数決定)
+    if now_frame >= 3
+      
+      # ２つ前のフレームパターンで場合分け
+      # ２つ前がストライクの場合
+      if frame_scores[two_before_frame_index].length == STRIKE_ELEMENT
+        puts '２つ前のフレームがストライクです'
+        # １つ前のフレームパターンで場合分け
+        # １つ前がストライクの場合(１投しか投げてない)
+        if frame_scores[previous_frame_index].length == STRIKE_ELEMENT
+          puts '２つ前のフレームがストライクでかつ１つ前のフレームがストライクなので、２つ前のフレームに１つ前のフレームスコアと現在のフレームの１投目を加点します'
+          frame_scores[two_before_frame_index].push(STRIKE).push(score1)
+        else
+        # １つ前がストライクではない場合(２投投げた)
+          puts '２つ前がストライクでかつ１つ前がストライクでないので、２つ前のフレームに１つ前のフレームスコアを加点します'
+          frame_scores[two_before_frame_index].concat(frame_scores[previous_frame_index])
+        end
+
+
+      
+      # ２つ前がスペアの場合
+      elsif frame_scores[previous_frame_index].length == SPARE_ELEMENT && frame_scores[previous_frame_index].inject(:+) == SPARE_SCORE
+        puts '２つ前のフレームがスペアです'
+        puts "２つ前のフレームがスペアなので、２つ前のフレームに１つ前の１投目の点数を加点します"
+        frame_scores[two_before_frame_index].push(frame_scores[previous_frame_index][0])
+
+      else
+        puts '２つ前のフレームはストライクでもスペアでもありません'
+        puts '２つ前のフレームに加点はありません'
+      end
+
+    end
+
+
+
+    # 10フレームの時のみ(9,10フレームの点数決定)
+    # 9フレームの点数決定
+    # 1つ前がストライクだった場合、現在の１投目と２投目を加える
+    # １つ前がスペアだった場合,現在の１投目を加える
+    if now_frame == MAX_FRAME
+      # 9フレームの点数決定処理
+      # 9フレームがストライクだった場合
+      if frame_scores[previous_frame_index].length == STRIKE_ELEMENT
+        frame_scores[previous_frame_index].push(score1).push(score2)
+        puts "９フレーム目がストライクだったので、１０フレームの１投目と２投目を追加します"
+
+        # ９フレームがスペアだった場合
+      elsif frame_scores[previous_frame_index].length == SPARE_ELEMENT && frame_scores[previous_frame_index].inject(:+) == SPARE_SCORE
+        frame_scores[previous_frame_index].push(score1)
+        puts "９フレーム目がスペアだったので、10フレームの１投目を追加します"
+      else
+        puts "9フレーム目がストライクでもスペアでもないので加点しません"
+
+      end
+    
+
+    end
 
 
 
 
     # 2フレーム
-    if now_frame == 2
-      # 1フレームがストライク(前の配列要素が一つ)かつ、2フレームでストライクをとった場合、score1のみを1フレームに追加
-      if frame_scores[previous_frame_index].length == 1 && score1 == 10
-        frame_scores[previous_frame_index].push(score1)
-        puts 'a'
+    # if now_frame == 2
+    #   # 1フレームがストライク(前の配列要素が一つ)かつ、2フレームでストライクをとった場合、score1のみを1フレームに追加
+    #   if frame_scores[previous_frame_index].length == 1 && score1 == 10
+    #     frame_scores[previous_frame_index].push(score1)
+    #     puts 'a'
 
-      # 1フレームがストライクかつ、2フレームでストライクでない場合
-      elsif frame_scores[previous_frame_index].length == 1 && score1 != 10
-        frame_scores[previous_frame_index].push(score1).push(score2)
-        puts 'b'
+    #   # 1フレームがストライクかつ、2フレームでストライクでない場合
+    #   elsif frame_scores[previous_frame_index].length == 1 && score1 != 10
+    #     frame_scores[previous_frame_index].push(score1).push(score2)
+    #     puts 'b'
 
-      # 1フレームがスペアの場合(要素が２つ、合計が10)、2フレームの１投目を前のフレームに追加
-      elsif frame_scores[previous_frame_index].length == 2 && frame_scores[previous_frame_index].inject(:+) == 10
-        frame_scores[previous_frame_index].push(score1)
-        puts "c"
-      end
+    #   # 1フレームがスペアの場合(要素が２つ、合計が10)、2フレームの１投目を前のフレームに追加
+    #   elsif frame_scores[previous_frame_index].length == 2 && frame_scores[previous_frame_index].inject(:+) == 10
+    #     frame_scores[previous_frame_index].push(score1)
+    #     puts "c"
+    #   end
 
-    # 3-9  フレーム
-    elsif now_frame >= 3 && now_frame < 10
+    # # 3-9  フレーム
+    # elsif now_frame >= 3 && now_frame < 10
 
-      # 1フレーム目と２フレーム目がストライクでかつ、３フレーム目でストライクの場合[[10,10][10]]
-      if frame_scores[two_before_frame_index].inject(:+) == 20 && frame_scores[previous_frame_index].length == 1 && score1 == 10
-        frame_scores[two_before_frame_index].push(score1)
-        frame_scores[previous_frame_index].push(score1)
-      # ２つ前のフレームと一つ前のフレームがストライクで、かつ現在のフレームでストライクをとった場合,10を２つ２つ前のframeに追加
-      elsif frame_scores[two_before_frame_index].length == 1 && frame_scores[previous_frame_index].length == 1 && score1 == 10
-        frame_scores[two_before_frame_index].push(10).push(10)
+    #   # 1フレーム目と２フレーム目がストライクでかつ、３フレーム目でストライクの場合[[10,10][10]]
+    #   if frame_scores[two_before_frame_index].inject(:+) == 20 && frame_scores[previous_frame_index].length == 1 && score1 == 10
+    #     frame_scores[two_before_frame_index].push(score1)
+    #     frame_scores[previous_frame_index].push(score1)
+    #   # ２つ前のフレームと一つ前のフレームがストライクで、かつ現在のフレームでストライクをとった場合,10を２つ２つ前のframeに追加
+    #   elsif frame_scores[two_before_frame_index].length == 1 && frame_scores[previous_frame_index].length == 1 && score1 == 10
+    #     frame_scores[two_before_frame_index].push(10).push(10)
 
-      # ２つ前のフレームと一つ前のフレームがストライクで、かつ現在のフレームでストライクでない場合,10を一つと１投目を二つのframeに追加
-      elsif frame_scores[two_before_frame_index].length == 1 && frame_scores[previous_frame_index].length == 1 && score1 != 10
-        frame_scores[two_before_frame_index].push(10).push(score1)
+    #   # ２つ前のフレームと一つ前のフレームがストライクで、かつ現在のフレームでストライクでない場合,10を一つと１投目を二つのframeに追加
+    #   elsif frame_scores[two_before_frame_index].length == 1 && frame_scores[previous_frame_index].length == 1 && score1 != 10
+    #     frame_scores[two_before_frame_index].push(10).push(score1)
 
-        # ２つ前のフレームがストライクで一つ前がスペアだった場合、二つ前のフレームに一つ前のフレームの２投を入れて、現在の１投目を一つ前のフレームに入れる
-      elsif frame_scores[two_before_frame_index].length == 1 && frame_scores[previous_frame_index].length == 2 && frame_scores[previous_frame_index].inject(:+) == 10
-        for val in frame_scores[previous_frame_index]
-          frame_scores[two_before_frame_index].push(val)
-        end
+    #     # ２つ前のフレームがストライクで一つ前がスペアだった場合、二つ前のフレームに一つ前のフレームの２投を入れて、現在の１投目を一つ前のフレームに入れる
+    #   elsif frame_scores[two_before_frame_index].length == 1 && frame_scores[previous_frame_index].length == 2 && frame_scores[previous_frame_index].inject(:+) == 10
+    #     for val in frame_scores[previous_frame_index]
+    #       frame_scores[two_before_frame_index].push(val)
+    #     end
 
-        # １つ前がスペアの場合
-      elsif frame_scores[previous_frame_index].length == 2 && frame_scores[previous_frame_index].inject(:+) == 10
-        frame_scores[previous_frame_index].push(score1)
-      else
-        puts '追加なし'
-      end
+    #     # １つ前がスペアの場合
+    #   elsif frame_scores[previous_frame_index].length == 2 && frame_scores[previous_frame_index].inject(:+) == 10
+    #     frame_scores[previous_frame_index].push(score1)
+    #   else
+    #     puts '追加なし'
+    #   end
 
-      #10フレーム目の処理
-    elsif now_frame == 10
-      #8フレームと9フレームがストライクの場合
-      if frame_scores[two_before_frame_index].inject(:+) == 20 && frame_scores[previous_frame_index].length == 1
-        frame_scores[two_before_frame_index].push(score1)
-        frame_scores[previous_frame_index].push(score1).push(score2)
+    #   #10フレーム目の処理
+    # elsif now_frame == 10
+    #   #8フレームと9フレームがストライクの場合
+    #   if frame_scores[two_before_frame_index].inject(:+) == 20 && frame_scores[previous_frame_index].length == 1
+    #     frame_scores[two_before_frame_index].push(score1)
+    #     frame_scores[previous_frame_index].push(score1).push(score2)
 
-      # # ８フレームがストライク9フレームがスペアの場合
-      # elsif
-      end
+    #   # # ８フレームがストライク9フレームがスペアの場合
+    #   # elsif
+    #   end
       
-    end
+    # end
 
 
 
