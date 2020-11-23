@@ -95,28 +95,19 @@ def throw(array_score, now_frame)
   end
 end
 
-
 # ----------------
 # ジャッジ
 # ・現在のフレームがスペアストライクのコメントを出力だけの処理(ロジックには影響しない)
 # ----------------
 def judge(array_score)
-  # 要素数が1だった場合=ストライクの場合
-  if array_score.length == 1
+  if array_score.length == STRIKE_ELEMENT # 要素数が1だった場合=ストライクの場合   
     puts "ストライク!!!!!!"
-
-  # 要素数が2でかつ合計値が10の場合=スペアの場合
-  elsif array_score.length == 2 && array_score.inject(:+) == 10
+  elsif array_score.length == SPARE_ELEMENT && array_score.inject(:+) == SPARE_SCORE  # 要素数が2でかつ合計値が10の場合=スペアの場合
     puts "スペア!"
-
-  # それ以外の場合
-  else
+  else # それ以外の場合
     puts "ストライクでもスペアでもない"
   end
 end
-
-
-
 
 
 # ============================
@@ -129,7 +120,6 @@ def playball
 
   player = "Player A"
 
-
   pl = Player.new
   player = pl.name
   puts player
@@ -137,8 +127,6 @@ def playball
   pl = Player.new
   player = pl.name
   puts player
-
-
 
   # =================
   # 変数
@@ -156,13 +144,10 @@ def playball
   # ３投目
   score3 = 0
 
-
-
   # =================
   # 処理
   # =================
 
-  puts '1'.class
   for i in (0..9) do
   # (0..9).each do |i|
   
@@ -249,41 +234,31 @@ def playball
           frame_scores[two_before_frame_index].concat(frame_scores[previous_frame_index])
         end
 
-
-      
       # ２つ前がスペアの場合
       elsif frame_scores[two_before_frame_index].length == SPARE_ELEMENT && frame_scores[two_before_frame_index].inject(:+) == SPARE_SCORE
         puts '２つ前のフレームがスペアです'
         puts "２つ前のフレームがスペアなので、２つ前のフレームに１つ前の１投目の点数を加点します"
         frame_scores[two_before_frame_index].push(frame_scores[previous_frame_index][0])
-
       else
         puts '２つ前のフレームはストライクでもスペアでもありません'
         puts '２つ前のフレームに加点はありません'
       end
-
     end
 
-
-
-    # 10フレームの時のみ(9,10フレームの点数決定)
-    # 9フレームの点数決定
-    # 1つ前がストライクだった場合、現在の１投目と２投目を加える
-    # １つ前がスペアだった場合,現在の１投目を加える
+    # 10フレームの時のみ(9フレームの点数決定)
+    # 9フレームがストライクだった場合、10フレームの１投目と２投目を加える
+    # 9フレームがスペアだった場合,10フレームの１投目を加える
     if now_frame == MAX_FRAME
-      # 9フレームの点数決定処理
       # 9フレームがストライクだった場合
       if frame_scores[previous_frame_index].length == STRIKE_ELEMENT
         frame_scores[previous_frame_index].push(score1).push(score2)
         puts "９フレーム目がストライクだったので、１０フレームの１投目と２投目を追加します"
-
         # ９フレームがスペアだった場合
       elsif frame_scores[previous_frame_index].length == SPARE_ELEMENT && frame_scores[previous_frame_index].inject(:+) == SPARE_SCORE
         frame_scores[previous_frame_index].push(score1)
         puts "９フレーム目がスペアだったので、10フレームの１投目を追加します"
       else
         puts "9フレーム目がストライクでもスペアでもないので加点しません"
-
       end
     end
 
@@ -305,7 +280,6 @@ def playball
   for k in (0..9)
     total_score += frame_scores[k].inject(:+)
   end
-
 
   puts "合計スコアは#{total_score}"
   score_board += "　　#{total_score}　　|"
