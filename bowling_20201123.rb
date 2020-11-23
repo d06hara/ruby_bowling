@@ -73,12 +73,10 @@ def throw(array_score, now_frame)
     if score1 != STRIKE
       # 残ったピンを計算して変数に代入
       remaining_pins = MAX_PINS - score1
-      #２投目は残り
+      #２投目(１本目の残り)と３投目(最大本数)を投げる
       score2 = rand(0..remaining_pins)
-      array_score.push(score2)
-      # 3本目を投げる(10本)
       score3 = rand(0..MAX_PINS)
-      array_score.push(score3)
+      array_score.push(score2).push(score3)
 
     else#1本目がストライクだった場合
       #2投目を投げる
