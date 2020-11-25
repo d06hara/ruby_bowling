@@ -23,57 +23,58 @@ SPARE_SCORE = 10
 # ============================
 
 # ----------------
-# 投球(1-9フレーム)
-# ・フレームによって何投投げるかの処理
+# 投球(1-9フレームと10フレーム)
 # ・1~9フレームは最大２投、10フレームは必ず3投投げる
 # ・戻り値は[[],[],......[]] の配列、戻り値の数によって場合分け
 # ----------------
 def throw(array_score, now_frame)
-
-  # リファクタリングドラフト
-  if now_frame < MAX_FRAME
-    # １投目の処理(全フレーム共通)
-    score1 = rand(0..MAX_PINS)
-    if score1 == STRIKE
-      return array_score.push(score1)
-    else
-      # 残ったピンを計算して変数に代入
-      remaining_pins = MAX_PINS - score1
-      # 2投目を投げてarray_scoreにpush
-      score2 = rand(0..remaining_pins)
-      return array_score.push(score1).push(score2)
-    end
-
-  else 
-    score1 = rand(0..MAX_PINS)
-    if score1 != STRIKE  # １本目がストライク以外の場合 →２本目は１本目の残り、３本目は最大本数
-      # 残ったピンを計算して変数に代入
-      remaining_pins = MAX_PINS - score1
-      #２投目(１本目の残り)と３投目(最大本数)を投げる
-      score2 = rand(0..remaining_pins)
-      # remaining_throw(score1)
-      score3 = rand(0..MAX_PINS)
-    else # 1本目がストライクだった場合　→２本目は最大本数
-      score2 = rand(0..MAX_PINS)
-      if score2 != STRIKE #２本目がストライク以外の場合、３本目の処理(２本目の残り)
-        remaining_pins = MAX_PINS - score2
-        score3 = rand(0..remaining_pins)
-      else #２本目がストライクの場合
-        score3 = rand(0..MAX_PINS)
-      end
-    end
-    return array_score.push(score1).push(score2).push(score3)
+  score1 = rand(0..MAX_PINS)
+  if score1 == STRIKE
+    return array_score.push(score1)
+  else
+    # 残ったピンを計算して変数に代入
+    remaining_pins = MAX_PINS - score1
+    # 2投目を投げてarray_scoreにpush
+    score2 = rand(0..remaining_pins)
+    return array_score.push(score1).push(score2)
   end
 end
 
-# ----------------
-# ストライクでない場合の投球メソッド
-# ----------------
-def remaining_throw(score1)
-  remaining_pins = MAX_PINS - score1
-  score2 = rand(0..remaining_pins)
-end
+def last_frame_throw(array_score,now_frame)
+  score1 = rand(0..MAX_PINS)
+  if score1 == STRIKE
+    score2 = rand(0..MAX_PINS)
+    if score2 == STRIKE
+      score3 = rand(0..MAX_PINS)
+    else
+      remaining_pins = MAX_PINS - score2
+      score3 = rand(0..remaining_pins)
+    end
+  else
+    remaining_pins = MAX_PINS - score1
+    #２投目(１本目の残り)と３投目(最大本数)を投げる
+    score2 = rand(0..remaining_pins)
+    score3 = rand(0..MAX_PINS)
+  end
+  return array_score.push(score1).push(score2).push(score3)
 
+  # if score1 != STRIKE  # １本目がストライク以外の場合 →２本目は１本目の残り、３本目は最大本数
+  #   # 残ったピンを計算して変数に代入
+  #   remaining_pins = MAX_PINS - score1
+  #   #２投目(１本目の残り)と３投目(最大本数)を投げる
+  #   score2 = rand(0..remaining_pins)
+  #   score3 = rand(0..MAX_PINS)
+  # else # 1本目がストライクだった場合　→２本目は最大本数
+  #   score2 = rand(0..MAX_PINS)
+  #   if score2 != STRIKE #２本目がストライク以外の場合、３本目の処理(２本目の残り)
+  #     remaining_pins = MAX_PINS - score2
+  #     score3 = rand(0..remaining_pins)
+  #   else #２本目がストライクの場合
+  #     score3 = rand(0..MAX_PINS)
+  #   end
+  # end
+  # return array_score.push(score1).push(score2).push(score3)
+end
 # ----------------
 # ジャッジ
 # ・現在のフレームがスペアストライクのコメントを出力だけの処理、戻り値なし(ロジックには影響しない)
@@ -150,7 +151,12 @@ def playball
     # ------------------
     # 投球
     # ------------------
-    throw(array_score, now_frame)
+    if now_frame != MAX_FRAME
+      throw(array_score, now_frame)
+    else
+      last_frame_throw(array_score,now_frame)
+    end
+    # throw(array_score, now_frame)
     puts "現在のフレームスコアは#{array_score}：(加点なし)"
 
     # 今回のフレームスコアを,スコア配列に代入
