@@ -37,20 +37,18 @@ def throw(array_score, now_frame)
     remaining_pins = MAX_PINS - score1
     # 2投目を投げてarray_scoreにpush
     score2 = rand(0..remaining_pins)
+
+    return array_score.push(score1).push(score2)
     puts "1投目:#{score1}ピン"
     puts (score1 + score2 == SPARE_SCORE ? "2投目:#{score2}ピン、スペア!!!" : "2投目:#{score2}ピン,合計#{score1 + score2}ピン")
-    return array_score.push(score1).push(score2)
   end
 end
 
 def last_frame_throw(array_score,now_frame)
   score1 = rand(0..MAX_PINS)
   if score1 == STRIKE
-    puts "ストライク!!!!!!"
     score2 = rand(0..MAX_PINS)
-    puts "ストライク!!!!!!"
     if score2 == STRIKE
-    puts "ストライク!!!!!!"
       score3 = rand(0..MAX_PINS)
     else
       remaining_pins = MAX_PINS - score2
@@ -62,8 +60,9 @@ def last_frame_throw(array_score,now_frame)
     score2 = rand(0..remaining_pins)
     score3 = rand(0..MAX_PINS)
   end
+  
   return array_score.push(score1).push(score2).push(score3)
-
+  puts "最終フレームの合計：#{score1 + score2 + score3}ピン"
 end
 
 # ============================
