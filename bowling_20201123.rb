@@ -17,7 +17,6 @@ SPARE_ELEMENT = 2
 # スペアだった時のスコア = 10
 SPARE_SCORE = 10
 
-
 # ============================
 # 共通メソッド
 # ============================
@@ -62,7 +61,7 @@ def last_frame_throw(array_score,now_frame)
     score2 = rand(0..remaining_pins)
     score3 = rand(0..MAX_PINS)
   end
-  
+  gi
   puts "最終フレームの合計：#{score1 + score2 + score3}ピン"
 
   return array_score.push(score1).push(score2).push(score3)
@@ -100,13 +99,12 @@ def playball
 
   for i in (0..9) do
   # (0..9).each do |i|
-  
+
     # ---------------------------
     # 変数の準備(初期化)
     # ---------------------------
 
-    # 1.フレーム数とピンを用意する
-    # フレームスコアの箱を用意
+    # 1.フレームスコアの箱を用意
     array_score = []
 
     # scores.each do |score|
@@ -134,7 +132,6 @@ def playball
     else
       last_frame_throw(array_score,now_frame)
     end
-    # throw(array_score, now_frame)
     puts "現在のフレームスコアは#{array_score}：(加点なし)"
 
     # 今回のフレームスコアを,スコア配列に代入

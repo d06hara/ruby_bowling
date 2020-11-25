@@ -5,9 +5,18 @@
 
 # puts score_board
 
-a = [10]
-b = [3, 7]
-print a.concat(b)
-print a.push(b[0])
+a = []
+a.each.with_index(1)
+a.push(1).push(2).push(3)
 print a
-print b 
+puts a[0]
+puts a[1]
+puts a[2]
+puts a[3]
+
+# a = [10]
+# b = [3, 7]
+# print a.concat(b)
+# print a.push(b[0])
+# print a
+# print b 
