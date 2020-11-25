@@ -30,12 +30,15 @@ SPARE_SCORE = 10
 def throw(array_score, now_frame)
   score1 = rand(0..MAX_PINS)
   if score1 == STRIKE
+    puts "ストライク!!!!!!"
     return array_score.push(score1)
   else
     # 残ったピンを計算して変数に代入
     remaining_pins = MAX_PINS - score1
     # 2投目を投げてarray_scoreにpush
     score2 = rand(0..remaining_pins)
+    puts "1投目:#{score1}ピン"
+    puts (score1 + score2 == SPARE_SCORE ? "2投目:#{score2}ピン、スペア!!!" : "2投目:#{score2}ピン,合計#{score1 + score2}ピン")
     return array_score.push(score1).push(score2)
   end
 end
@@ -43,8 +46,11 @@ end
 def last_frame_throw(array_score,now_frame)
   score1 = rand(0..MAX_PINS)
   if score1 == STRIKE
+    puts "ストライク!!!!!!"
     score2 = rand(0..MAX_PINS)
+    puts "ストライク!!!!!!"
     if score2 == STRIKE
+    puts "ストライク!!!!!!"
       score3 = rand(0..MAX_PINS)
     else
       remaining_pins = MAX_PINS - score2
@@ -58,37 +64,7 @@ def last_frame_throw(array_score,now_frame)
   end
   return array_score.push(score1).push(score2).push(score3)
 
-  # if score1 != STRIKE  # １本目がストライク以外の場合 →２本目は１本目の残り、３本目は最大本数
-  #   # 残ったピンを計算して変数に代入
-  #   remaining_pins = MAX_PINS - score1
-  #   #２投目(１本目の残り)と３投目(最大本数)を投げる
-  #   score2 = rand(0..remaining_pins)
-  #   score3 = rand(0..MAX_PINS)
-  # else # 1本目がストライクだった場合　→２本目は最大本数
-  #   score2 = rand(0..MAX_PINS)
-  #   if score2 != STRIKE #２本目がストライク以外の場合、３本目の処理(２本目の残り)
-  #     remaining_pins = MAX_PINS - score2
-  #     score3 = rand(0..remaining_pins)
-  #   else #２本目がストライクの場合
-  #     score3 = rand(0..MAX_PINS)
-  #   end
-  # end
-  # return array_score.push(score1).push(score2).push(score3)
 end
-# ----------------
-# ジャッジ
-# ・現在のフレームがスペアストライクのコメントを出力だけの処理、戻り値なし(ロジックには影響しない)
-# ----------------
-def judge(array_score)
-  if array_score.length == STRIKE_ELEMENT # 要素数が1だった場合=ストライクの場合   
-    puts "ストライク!!!!!!"
-  elsif array_score.length == SPARE_ELEMENT && array_score.inject(:+) == SPARE_SCORE  # 要素数が2でかつ合計値が10の場合=スペアの場合
-    puts "スペア!"
-  else # それ以外の場合
-    puts "ストライクでもスペアでもない"
-  end
-end
-
 
 # ============================
 # 試合開始
@@ -161,11 +137,6 @@ def playball
 
     # 今回のフレームスコアを,スコア配列に代入
     frame_scores[i] = array_score
-
-    # ---------------------------
-    # 判定 (コメントのみ、ロジックには影響しない)
-    # --------------------------- 
-    judge(array_score)
 
     # ---------------------------
     # 加点の処理(３フレーム以降に処理を行う)
