@@ -27,22 +27,21 @@ SPARE_SCORE = 10
 # ・戻り値は[[],[],......[]] の配列、戻り値の数によって場合分け
 # ----------------
 def throw(array_score, now_frame)
-  score1 = rand(0..MAX_PINS)
-  if score1 == STRIKE
-    puts "ストライク!!!!!!"
-    return array_score.push(score1)
-  else
-    # 残ったピンを計算して変数に代入
-    remaining_pins = MAX_PINS - score1
-    # 2投目を投げてarray_scoreにpush
-    score2 = rand(0..remaining_pins)
 
-    puts "1投目:#{score1}ピン"
-    puts (score1 + score2 == SPARE_SCORE ? "2投目:#{score2}ピン、スペア!!!" : "2投目:#{score2}ピン,合計#{score1 + score2}ピン")
+  scores = []
+  sum = 0
 
-    return array_score.push(score1).push(score2)
-
+  (1..2).each do |i|
+    if scores.count > 0
+      sum = scores.inject(:+)
+      
+    end
+    remaining_pins = MAX_PINS - sum
+    score = rand(0..remaining_pins)
+    scores.push(score)
+    break if sum == STRIKE
   end
+  return scores
 end
 
 def last_frame_throw(array_score,now_frame)
