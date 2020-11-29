@@ -53,24 +53,17 @@ end
   else
     (1..3).each do |throws|
       # 残りのピンを計算
-      puts "score:#{score}"
-      puts "frame:#{frame}"
       remaining_pins = calc_pins(scores, score, frame)
-      puts "remaining_pins:#{remaining_pins}"
       # 投げる
       score = ball_throw(remaining_pins)
-      puts "score:#{score}"
       # 記入
       fill_in_score(scores, score)
-      print "#{scores} \n"
-
       # ２投投げ終わってかつ、スペアでない場合はbreak
-      if scores.length == SPARE_ELEMENTS && scores.sum != SPARE
+      if throws == 2 && scores.sum != SPARE
         break
       end
     end
   end
-
   fill_in_score(total_scores, scores)
 end
 
