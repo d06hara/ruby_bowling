@@ -24,17 +24,14 @@ def fill_in_score(scores, score)
 end
 
 # 集計結果を受け取って、残りのピンを計算する
-def calc_pins(score, frame)
-  # pins = MAX_PINS - score
-  if frame == 10 && score == STRIKE
+def calc_pins(scores, score, frame)
+  if frame == MAX_FRAME && (scores.sum == STRIKE || scores.sum == SPARE)
     return MAX_PINS
   else
     MAX_PINS - score
   end
 end
 #------------------------
-
-
 
 (1..MAX_FRAME).each do |frame|
   # scoresを初期化
@@ -43,7 +40,7 @@ end
   if frame < MAX_FRAME
     (1..2).each do |throws|
       # 残りのピンを計算
-      remaining_pins = calc_pins(score, frame)
+      remaining_pins = calc_pins(scores, score, frame)
       # 投げる
       score = ball_throw(remaining_pins)
       # スコアを記入
@@ -58,7 +55,7 @@ end
       # 残りのピンを計算
       puts "score:#{score}"
       puts "frame:#{frame}"
-      remaining_pins = calc_pins(score, frame)
+      remaining_pins = calc_pins(scores, score, frame)
       puts "remaining_pins:#{remaining_pins}"
       # 投げる
       score = ball_throw(remaining_pins)
