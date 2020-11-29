@@ -37,36 +37,19 @@ end
   # scoresを初期化
   score = 0 #１投のスコア
   scores = [] # １フレームのスコア
-  if frame < MAX_FRAME
-    (1..2).each do |throws|
-      # 残りのピンを計算
-      remaining_pins = calc_pins(scores, score, frame)
-      # 投げる
-      score = ball_throw(remaining_pins)
-      # スコアを記入
-      fill_in_score(scores, score)
-      # ストライクの場合はループを抜ける
-      if scores.sum == STRIKE
-        break
-      end
-    end
-  else
-    (1..3).each do |throws|
-      # 残りのピンを計算
-      remaining_pins = calc_pins(scores, score, frame)
-      # 投げる
-      score = ball_throw(remaining_pins)
-      # 記入
-      fill_in_score(scores, score)
-      # ２投投げ終わってかつ、スペアでない場合はbreak
-      if throws == 2 && scores.sum != SPARE
-        break
-      end
+  (1..3).each do |throws|
+    # 残りのピンを計算
+    remaining_pins = calc_pins(scores, score, frame)
+    # 投げる
+    score = ball_throw(remaining_pins)
+    # スコアを記入
+    fill_in_score(scores, score)
+    # ストライクの場合はループを抜ける
+    if (frame != MAX_FRAME && (scores.sum == (STRIKE || SPARE))) || (throws == 2 && scores.sum != SPARE)
+      break
     end
   end
   fill_in_score(total_scores, scores)
 end
 
 print total_scores
-
-
