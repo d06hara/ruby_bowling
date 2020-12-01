@@ -67,35 +67,6 @@ answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 9, 0], [9, 0], [3, 3],
 
 print total_scores
 
-# total_scores.each.with_index(1) do |scores, frame|
-#   puts "#{frame}フレームのスコアは#{scores}です"
-
-#   # ３フレーム以降で場合分け
-#   if frame >= 3
-#     # 変数を定義
-#     two_before_frame = frame - 2
-#     one_before_frame = frame - 1
-
-#     puts "#{two_before_frame}フレームのスコアは#{total_scores[two_before_frame]}"
-#   end
-# end
-
-# (1..MAX_FRAME).each do|frame|
-#   # 変数を定義
-#   frame = frame - 1
-#   one_before_frame = frame - 1
-#   two_before_frame = one_before_frame - 1
-#   # puts "#{frame}"
-#   # puts "#{one_before_frame}"
-
-#   # 加点処理は３フレーム以降で行う
-#   if frame >= 3
-#     total_scores[two_before_frame].length ==
-    
-#   end
-  
-# end
-
 def judge_scores(scores)
   if scores.length == STRIKE_ELEMENT && scores.sum == STRIKE
     'STRIKE'
