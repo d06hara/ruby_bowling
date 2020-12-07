@@ -16,7 +16,6 @@ FIRST_THROW_INDEX = 0
 SECOND_THROW_INDEX = 1
 
 score = 0
-# frame_score = []
 #---------------------
 
 # ストライク判定
@@ -34,12 +33,22 @@ def double?(frame_score)
   (frame_score.length == DOUBLE_ELEMENTS) && frame_score.sum == DOUBLE ? true : false
 end
 
+# スペアの場合の加点（前のフレームスコアに現在の１投目を追加)
+def add_score_spare_case(test_array, before_frame_index, now_frame_score)
+  test_array[before_frame_index].push(now_frame_score[0])
+end
+
+# ストライクの場合の加点（前のフレームスコアに現在の１投目と２投目を追加)
+def add_score_strike_case(test_array, before_frame_index, now_frame_score)
+  test_array[before_frame_index].push(now_frame_score[0]).push(now_frame_score[1])
+end
+
 
 # 練習用スコア配列
-practice_scores = [[10],[8, 2], [4, 5], [3, 7], [10], [10], [3, 3], [7, 3], [10], [10, 8, 2]]
+practice_scores = [[10],[8, 2], [4, 5], [3, 7], [10], [10], [3, 3], [10], [10], [10, 8, 2]]
 test_array = []
 total_scores = []
-answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 10, 3], [10, 3, 3], [3, 3], [7, 3, 10], [10, 10, 8], [10, 8, 2]]
+answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 10, 3], [10, 3, 3], [3, 3], [10, 10, 10], [10, 10, 8], [10, 8, 2]]
 
 # 加点が始まるのは2投目から
 #前のフレームスコアをチェックする
@@ -78,28 +87,39 @@ answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 10, 3], [10, 3, 3], [3
     puts ''
     print "#{now_frame_score}"
     puts ''
+    puts ''
+    print "#{test_array}"
+    puts ''
+
+    #まずダブルの処理
+    if (double?(two_before_frame_score))
+      test_array[two_before_frame_index].push(now_frame_score[0])
+    end
+
     if(spare?(before_frame_score))
-      test_array[before_frame_index].push(now_frame_score[0])
+      add_score_spare_case(test_array, before_frame_index, now_frame_score)
     elsif(strike?(before_frame_score))
-      test_array[before_frame_index].push(now_frame_score[0]).push(now_frame_score[1])
+      add_score_strike_case(test_array, before_frame_index, now_frame_score)
     else
       puts '加点なし'
     end
-    next
+    
+    break
   end
 
 
   # 前のフレームがスペアだった場合、現在のフレームの1投目を追加
   if(spare?(before_frame_score))
-    test_array[before_frame_index].push(now_frame_score[0])
+    add_score_spare_case(test_array, before_frame_index, now_frame_score)
   end
 
   # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
   if(strike?(before_frame_score))
     if(strike?(now_frame_score))
-      test_array[before_frame_index].push(now_frame_score[0])
+      # スペアケースと一緒
+      add_score_spare_case(test_array, before_frame_index, now_frame_score)
     else
-      test_array[before_frame_index].push(now_frame_score[0]).push(now_frame_score[1])
+      add_score_strike_case(test_array, before_frame_index, now_frame_score)
     end
   end
   
@@ -117,7 +137,6 @@ answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 10, 3], [10, 3, 3], [3
     puts 'ダブルです'
     # １つ前のフレームと２つ前のフレームがストライクだった場合→ダブルだった場合、二つ前のフレームスコアに現在の１投目を追加
     test_array[two_before_frame_index].push(now_frame_score[0])
-
   end
 
 end
