@@ -35,7 +35,7 @@ class BallThrow
     @@total_frames += 1
   end
 
-  # 残りのピンを受け取ってそれに対し球を投げて返すだけ
+  # 残りのピンに対し球を投げる
   def one_throw
     @score = rand(0..@remaining_pins)
   end
@@ -44,12 +44,13 @@ class BallThrow
   def fill_in_score
     @scores.push(@score)
   end
+
   # フレームスコアを合計スコアに入れる
   def scores_to_total_scores
     @@total_scores.push(@scores)
   end
 
-  # 集計結果を受け取って、残りのピンを計算する
+  # 残りのピンを計算する
   def calc_pins
     (last_frame? && (strike? || spare?)) ? @remaining_pins = MAX_PINS : @remaining_pins = MAX_PINS - @score
   end
