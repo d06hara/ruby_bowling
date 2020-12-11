@@ -72,11 +72,6 @@ class AddScore
     @@total_scores.push(@now_frame_score)
   end
 
-  #   # ストライク判定
-  # def strike?(frame_score)
-  #   (frame_score.length == STRIKE_ELEMENT) && (frame_score.sum == STRIKE) ? true : false
-  # end
-
   # スコアの要素数チェック
   def check_score_length
     @now_frame_score.length == 1 ? STRIKE_ELEMENT : SPARE_ELEMENTS
@@ -93,6 +88,11 @@ class AddScore
   # スペア判定
   def spare?
     (check_score_length == SPARE_ELEMENTS) && (check_score_sum == SPARE) ? true : false
+  end
+
+  # ストライク判定
+  def strike?
+    (check_score_length == STRIKE_ELEMENT) && (check_score_sum == STRIKE) ? true : false
   end
 
   # # ダブル判定
@@ -151,7 +151,7 @@ end
 
 
   AddScore.info
-  puts add_score.spare?
+  puts add_score.strike?
 
 
   # # ３フレーム以降の処理
