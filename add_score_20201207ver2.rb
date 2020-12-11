@@ -73,26 +73,44 @@ class AddScore
     @@total_scores.push(@now_frame_score)
   end
 
+  # 今のスコアの要素数チェック
+  def check_now_score_length
+    @now_frame_score.length == 1 ? STRIKE_ELEMENT : SPARE_ELEMENTS
+  end
   # 前のスコアの要素数チェック
-  def check_score_length
+  def check_before_score_length
     @before_frame_score.length == 1 ? STRIKE_ELEMENT : SPARE_ELEMENTS
   end
 
+  # 今のスコアの合計数チェック
+  def check_now_score_sum
+    if @now_frame_score.sum == 10
+      STRIKE_OR_SPARE
+    end
+  end
   # 前のスコアの合計数チェック
-  def check_score_sum
+  def check_before_score_sum
     if @before_frame_score.sum == 10
       STRIKE_OR_SPARE
     end
   end
 
-  # スペア判定
+  # 現フレームスペア判定
+  def now_spare?
+    (check_now_score_length =f= SPARE_ELEMENTS) && (check_now_score_sum == SPARE) ? true : false
+  end
+  # 1フレームスペア判定
   def before_spare?
-    (check_score_length == SPARE_ELEMENTS) && (check_score_sum == SPARE) ? true : false
+    (check_before_score_length == SPARE_ELEMENTS) && (check_before_score_sum == SPARE) ? true : false
   end
 
-  # ストライク判定
+  # 現フレーム前ストライク判定
+  def now_strike?
+    (check_now_score_length == STRIKE_ELEMENT) && (check_now_score_sum == STRIKE) ? true : false
+  end
+  # １フレーム前ストライク判定
   def before_strike?
-    (check_score_length == STRIKE_ELEMENT) && (check_score_sum == STRIKE) ? true : false
+    (check_before_score_length == STRIKE_ELEMENT) && (check_before_score_sum == STRIKE) ? true : false
   end
 
   # # ダブル判定
@@ -101,7 +119,6 @@ class AddScore
   # end
 
   # スペアの場合の加点（前のフレームスコアに現在の１投目を追加)
-  # def add_score_spare_case(total_scores, before_frame_index, now_frame_score)
   def add_score_spare_case
     # puts ''
     # print "#{@@total_scores}"
@@ -116,6 +133,12 @@ class AddScore
   # def add_score_strike_case(total_scores, before_frame_index, now_frame_score)
   #   total_scores[before_frame_index].push(now_frame_score[0]).push(now_frame_score[1])
   # end
+  def add_one_score_strike_case
+    @@total_scores[@@before_frame_index].push(@now_frame_score[0])
+  end
+  def add_two_score_strike_case
+    @@total_scores[@@before_frame_index].push(@now_frame_score[0]).push(@now_frame_score[1])
+  end
 
   # # ストライクの場合の加点（前のフレームスコアに現在の１投目と２投目を追加)
   # def add_score_double_case(total_scores, two_before_frame_index, now_frame_score)
@@ -166,18 +189,9 @@ end
   end
   
   # 前のフレームがスペアだった場合、現在のフレームの1投目を追加
-
   if(add_score.before_spare?)
     add_score.add_score_spare_case
   end
-
-
-  # # ３フレーム以降の処理
-  # if frame >= 3 && (double?(two_before_frame_score))
-  #   add_score_double_case(total_scores, two_before_frame_index, now_frame_score)
-  # end
-  
-
   # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
   # if(strike?(before_frame_score))
   #   if(strike?(now_frame_score))
@@ -187,6 +201,25 @@ end
   #     add_score_strike_case(total_scores, before_frame_index, now_frame_score)
   #   end
   # end
+
+  # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
+  if(add_score.before_strike?)
+    if(add_score.now_strike?)
+      # スペアケースと一緒
+      add_score.add_one_score_strike_case
+    else
+      add_score.add_two_score_strike_case
+    end
+  end
+
+
+  # # ３フレーム以降の処理
+  # if frame >= 3 && (double?(two_before_frame_score))
+  #   add_score_double_case(total_scores, two_before_frame_index, now_frame_score)
+  # end
+  
+
+
 
   # # 最終フレームの処理
   # if frame == MAX_FRAME
