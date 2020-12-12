@@ -71,15 +71,11 @@ class AddScore
 
   # 今のスコアの合計数チェック
   def check_now_score_sum
-    if @now_frame_score.sum == 10
-      STRIKE_OR_SPARE
-    end
+    STRIKE_OR_SPARE if @now_frame_score.sum == 10
   end
   # 前のスコアの合計数チェック
   def check_before_score_sum
-    if @before_frame_score.sum == 10
-      STRIKE_OR_SPARE
-    end
+    STRIKE_OR_SPARE if @before_frame_score.sum == 10
   end
   # ２フレーム前のスコアの合計数チェック
   def check_two_before_score_sum
