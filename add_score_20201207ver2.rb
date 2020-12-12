@@ -111,12 +111,12 @@ class AddScore
   end
 
   # # ストライクの場合の加点（前のフレームスコアに現在の１投目と２投目を追加)
-  def add_two_score_strike_case
+  def add_two_score_to_two_before_frame
     @@total_scores[@@before_frame_index].push(@now_frame_score[0]).push(@now_frame_score[1])
   end
 
   # ストライクの場合の加点（前のフレームスコアに現在の１投目と２投目を追加)
-  def add_score_double_case
+  def add_one_score_to_two_before_frame
     @@total_scores[@@two_before_frame_index].push(@now_frame_score[0])
   end
 end
@@ -147,12 +147,12 @@ end
 
   # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
   if(add_score.before_strike?)
-    (add_score.now_strike?) ? add_score.add_one_score_to_before_frame : add_score.add_two_score_strike_case
+    (add_score.now_strike?) ? add_score.add_one_score_to_before_frame : add_score.add_two_score_to_two_before_frame
   end
 
   # ３フレーム以降の処理
   if frame >= 3 && (add_score.two_before_double?)
-    add_score.add_score_double_case
+    add_score.add_one_score_to_two_before_frame
   end
 
   # 確認用
