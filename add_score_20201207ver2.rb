@@ -2,9 +2,6 @@
 # 変数,定数
 #===================
 # total_scoresはscoresの集まり
-
-
-
 # 練習用スコア配列
 answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 10, 3], [10, 3, 3], [3, 3], [10, 10, 10], [10, 10, 8], [10, 8, 2]]
 
@@ -31,16 +28,8 @@ class AddScore
   #インスタンス生成するたびに１をたす、初期値は1
   @@frame = 0
   @@practice_scores = [[10],[10], [4, 5], [3, 7], [10], [10], [3, 3], [10], [10], [10, 8, 2]]
-
-
-  # @@now_frame_index = 0
-  # @@before_frame_index = 0
-  # @@two_before_frame_index = 0
-
-
   # 初期化
   def initialize(frame_score = [])
-  # def initializa(frame_score = [], before_frame_score = [], two_before_frame_score = [])
 
     @@total_scores
     #インスタンス生成するたびに１を足す
@@ -53,11 +42,8 @@ class AddScore
     # フレームスコア
     @frame_score = frame_score
     @now_frame_score = @@practice_scores[@@now_frame_index]
-    # @now_frame_score = now_frame_score = @@total_scores[@@now_frame_index]
     @before_frame_score = @@practice_scores[@@before_frame_index]
-    # @before_frame_score = before_frame_score = @@total_scores[@@before_frame_index]
-    @two_before_frame_score = @@total_scores[@@two_before_frame_index]
-    # @two_before_frame_score = two_before_frame_score = @@total_scores[@@two_before_frame_index]
+    @two_before_frame_score = @@practice_scores[@@two_before_frame_index]
 
 
   end
@@ -133,26 +119,15 @@ class AddScore
   # ダブル判定
   def double?
     puts 'b'
-  # def double?(frame_score)
-    # (frame_score.length == DOUBLE_ELEMENTS) && frame_score.sum == DOUBLE ? true : false
     (two_before_double?) ? true : false
   end
 
   # スペアの場合の加点（前のフレームスコアに現在の１投目を追加)
   def add_score_spare_case
-    # puts ''
-    # print "#{@@total_scores}"
-    # puts ''
-    # puts "#{@@before_frame_index}"
-    # puts "#{@now_frame_score}"
-    # total_scores[before_frame_index].push(now_frame_score[0])
     @@total_scores[@@before_frame_index].push(@now_frame_score[0])
   end
 
   # # ストライクの場合の加点（前のフレームスコアに現在の１投目と２投目を追加)
-  # def add_score_strike_case(total_scores, before_frame_index, now_frame_score)
-  #   total_scores[before_frame_index].push(now_frame_score[0]).push(now_frame_score[1])
-  # end
   def add_one_score_strike_case
     @@total_scores[@@before_frame_index].push(@now_frame_score[0])
   end
@@ -161,9 +136,6 @@ class AddScore
   end
 
   # ストライクの場合の加点（前のフレームスコアに現在の１投目と２投目を追加)
-  # def add_score_double_case(total_scores, two_before_frame_index, now_frame_score)
-  #   total_scores[two_before_frame_index].push(now_frame_score[0])
-  # end
   def add_score_double_case
     puts 'a'
     @@total_scores[@@two_before_frame_index].push(@now_frame_score[0])
@@ -180,30 +152,7 @@ end
   # インスタンス化
   add_score = AddScore.new
 
-
-
-  # 変数準備
-  # now_frame_index = frame - 1
-  # before_frame_index = now_frame_index - 1
-  # two_before_frame_index = before_frame_index - 1
-
-  # # このフレームスコア
-  # now_frame_score = practice_scores[now_frame_index]
-  # # 前のフレームスコアを取得する
-  # before_frame_score = total_scores[before_frame_index]
-  # # ２個前のフレームスコアも取得
-  # two_before_frame_score = total_scores[two_before_frame_index]
-
-  # テスト用配列にスコアを入れていく
-  # total_scores.push(now_frame_score)
-
-
   add_score.frame_score_to_total_scores #合計スコアにフレームスコアを入れていく
-
-
-  # puts add_score.strike?
-
-
 
   # 加点処理開始
 
@@ -216,16 +165,7 @@ end
   if(add_score.before_spare?)
     add_score.add_score_spare_case
   end
-  # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
-  # if(strike?(before_frame_score))
-  #   if(strike?(now_frame_score))
-  #     # スペアケースと一緒
-  #     add_score_spare_case(total_scores, before_frame_index, now_frame_score)
-  #   else
-  #     add_score_strike_case(total_scores, before_frame_index, now_frame_score)
-  #   end
-  # end
-
+  
   # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
   if(add_score.before_strike?)
     if(add_score.now_strike?)
@@ -243,8 +183,6 @@ end
   end
   
 
-
-
   # # 最終フレームの処理
   # if frame == MAX_FRAME
   #   puts '最終フレーム'
@@ -258,16 +196,8 @@ end
   #   break
   # end
 
-
+  # 確認用
   AddScore.info
 end
 
-
-# print total_scores
-# puts ''
-# print practice_scores
-# puts ''
-# print total_scores
-# puts ''
-# print answer
 
