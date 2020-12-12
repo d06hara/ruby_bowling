@@ -100,15 +100,9 @@ class AddScore
     (check_before_score_length == STRIKE_ELEMENT) && (check_before_score_sum == STRIKE) ? true : false
   end
 
-
   # 2フレーム前ダブル判定
   def two_before_double?
     (check_two_before_score_length == DOUBLE_ELEMENTS) && (check_two_before_score_sum == DOUBLE) ? true : false
-  end
-
-  # ダブル判定
-  def double?
-    (two_before_double?) ? true : false
   end
 
   # 前のフレームに現在の１投目を追加する(前のフレームがスペアだった場合orストライクで今回もストライクの場合)
@@ -157,7 +151,7 @@ end
   end
 
   # ３フレーム以降の処理
-  if frame >= 3 && (add_score.double?)
+  if frame >= 3 && (add_score.two_before_double?)
     add_score.add_score_double_case
   end
 
