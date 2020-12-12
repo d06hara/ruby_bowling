@@ -19,15 +19,12 @@ class AddScore
   SPARE_ELEMENTS = 2
   STRIKE_ELEMENT = 1
   DOUBLE_ELEMENTS = 2
-  FIRST_THROW_INDEX = 0
-  SECOND_THROW_INDEX = 1
-  
 
   # クラス変数（initialize後に値を保持)
   @@total_scores = [] #scoreの集まり
   #インスタンス生成するたびに１をたす、初期値は1
   @@frame = 0
-  @@practice_scores = [[10],[10], [4, 5], [3, 7], [10], [10], [3, 3], [10], [10], [10, 8, 2]]
+  @@practice_scores = [[10],[8,2], [4, 5], [3, 7], [10], [10], [3, 3], [10], [10], [10, 8, 2]]
   # 初期化
   def initialize(frame_score = [])
 
@@ -45,13 +42,12 @@ class AddScore
     @before_frame_score = @@practice_scores[@@before_frame_index]
     @two_before_frame_score = @@practice_scores[@@two_before_frame_index]
 
-
   end
 
   # 確認用
   def self.info
     puts ''
-    print "#{@@frame}フレームまでの合計スコアは#{@@total_scores}"
+    print "#{@@total_scores}"
     puts ''
   end
 
@@ -70,7 +66,7 @@ class AddScore
   end
   # 2フレームのスコアの要素数チェック
   def check_two_before_score_length
-    @two_before_frame_score.length == 1 ? STRIKE_ELEMENT : SPARE_ELEMENTS
+    DOUBLE_ELEMENTS if @two_before_frame_score.length == 2
   end
 
   # 今のスコアの合計数チェック
@@ -87,16 +83,12 @@ class AddScore
   end
   # ２フレーム前のスコアの合計数チェック
   def check_two_before_score_sum
-    if @two_before_frame_score.sum == 10
-      STRIKE_OR_SPARE
-    elsif @two_before_frame_score.sum == 20
-      DOUBLE
-    end
+    DOUBLE if @two_before_frame_score.sum == 20
   end
 
   # 現フレームスペア判定
   def now_spare?
-    (check_now_score_length =f= SPARE_ELEMENTS) && (check_now_score_sum == SPARE) ? true : false
+    (check_now_score_length == SPARE_ELEMENTS) && (check_now_score_sum == SPARE) ? true : false
   end
   # 1フレームスペア判定
   def before_spare?
@@ -111,6 +103,8 @@ class AddScore
   def before_strike?
     (check_before_score_length == STRIKE_ELEMENT) && (check_before_score_sum == STRIKE) ? true : false
   end
+
+
   # 2フレーム前ダブル判定
   def two_before_double?
     (check_two_before_score_length == DOUBLE_ELEMENTS) && (check_two_before_score_sum == DOUBLE) ? true : false
@@ -118,7 +112,6 @@ class AddScore
 
   # ダブル判定
   def double?
-    puts 'b'
     (two_before_double?) ? true : false
   end
 
@@ -137,7 +130,6 @@ class AddScore
 
   # ストライクの場合の加点（前のフレームスコアに現在の１投目と２投目を追加)
   def add_score_double_case
-    puts 'a'
     @@total_scores[@@two_before_frame_index].push(@now_frame_score[0])
   end
 end
@@ -146,58 +138,36 @@ end
 # 加点が始まるのは2投目から
 #前のフレームスコアをチェックする
 
-(1..5).each do |frame|
-# (FIRST_FRAME..MAX_FRAME).each do |frame|
+# (1..10).each do |frame|
+(AddScore::FIRST_FRAME..AddScore::MAX_FRAME).each do |frame|
 
   # インスタンス化
   add_score = AddScore.new
-
   add_score.frame_score_to_total_scores #合計スコアにフレームスコアを入れていく
 
   # 加点処理開始
-
   # 最初のフレームは処理をnextする
   if frame == 1
     next
   end
-  
+
   # 前のフレームがスペアだった場合、現在のフレームの1投目を追加
   if(add_score.before_spare?)
     add_score.add_score_spare_case
   end
-  
+
   # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
   if(add_score.before_strike?)
-    if(add_score.now_strike?)
-      # スペアケースと一緒
-      add_score.add_one_score_strike_case
-    else
-      add_score.add_two_score_strike_case
-    end
+    (add_score.now_strike?) ? add_score.add_one_score_strike_case : add_score.add_two_score_strike_case
   end
-
 
   # ３フレーム以降の処理
   if frame >= 3 && (add_score.double?)
     add_score.add_score_double_case
   end
-  
-
-  # # 最終フレームの処理
-  # if frame == MAX_FRAME
-  #   puts '最終フレーム'
-  #   if(spare?(before_frame_score))
-  #     add_score_spare_case(total_scores, before_frame_index, now_frame_score)
-  #   elsif(strike?(before_frame_score))
-  #     add_score_strike_case(total_scores, before_frame_index, now_frame_score)
-  #   else
-  #     puts '加点なし'
-  #   end
-  #   break
-  # end
 
   # 確認用
   AddScore.info
 end
-
+print answer
 
