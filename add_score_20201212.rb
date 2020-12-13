@@ -8,9 +8,19 @@ answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 10, 3], [10, 3, 3], [3
 #---------------------
 
 class Bowling
-  
+
   FIRST_FRAME = 1
-  MAX_FRAME = 10
+  LAST_FRAME = 10
+
+  # 最初のフレーム 呼び出し
+  def first_frame
+    FIRST_FRAME
+  end
+
+  #最終フレーム呼び出し
+  def last_frame
+    LAST_FRAME
+  end
 
   # AddScoreのインスタンス生成
   def add_score
@@ -26,8 +36,6 @@ class AddScore
   SPARE = 10
   STRIKE_OR_SPARE = 10
   DOUBLE = 20
-  # FIRST_FRAME = 1
-  # MAX_FRAME = 10
   SPARE_ELEMENTS = 2
   STRIKE_ELEMENT = 1
   DOUBLE_ELEMENTS = 2
@@ -138,7 +146,7 @@ end
 
 bowling = Bowling.new
 
-(Bowling::FIRST_FRAME..Bowling::MAX_FRAME).each do |frame|
+(bowling.first_frame..bowling.last_frame).each do |frame|
 
   # インスタンス化
   add_score = bowling.add_score
