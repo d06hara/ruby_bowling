@@ -9,20 +9,37 @@
 # -----ファイルの読み込み----------
 
 require './ball_throws_20201209.rb' #投球クラス
+require './add_score_20201213.rb' #加点クラス
 
 # ------------------------------
 
+class Bowling
 
+  FIRST_FRAME = 1
+  LAST_FRAME = 10
 
-# class Bowling
-#   ### TODO
-# end
+  # 最初のフレーム 呼び出し
+  def first_frame
+    FIRST_FRAME
+  end
 
-# bowling = new Bowling
-# bowling.xxxxx 
+  #最終フレーム呼び出し
+  def last_frame
+    LAST_FRAME
+  end
 
+  # AddScoreのインスタンス生成
+  def add_score
+    AddScore.new
+  end
 
-(1..FINISH_FRAME).each do |frame|
+end
+
+# -----メイン処理----------
+
+bowling = Bowling.new
+
+(bowling.first_frame..bowling.last_frame).each do |frame|
 
   # インスタンス化
   ball_throw = BallThrow.new
