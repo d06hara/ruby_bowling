@@ -7,6 +7,18 @@ answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 10, 3], [10, 3, 3], [3
 
 #---------------------
 
+class Bowling
+  
+  FIRST_FRAME = 1
+  MAX_FRAME = 10
+
+  # AddScoreのインスタンス生成
+  def add_score
+    AddScore.new
+  end
+
+end
+
 class AddScore
 
   MAX_PINS = 10
@@ -14,8 +26,8 @@ class AddScore
   SPARE = 10
   STRIKE_OR_SPARE = 10
   DOUBLE = 20
-  FIRST_FRAME = 1
-  MAX_FRAME = 10
+  # FIRST_FRAME = 1
+  # MAX_FRAME = 10
   SPARE_ELEMENTS = 2
   STRIKE_ELEMENT = 1
   DOUBLE_ELEMENTS = 2
@@ -122,14 +134,15 @@ class AddScore
 end
 
 
-# 加点が始まるのは2投目から
-#前のフレームスコアをチェックする
+# -----メイン処理----------
 
-# (1..10).each do |frame|
-(AddScore::FIRST_FRAME..AddScore::MAX_FRAME).each do |frame|
+bowling = Bowling.new
+
+(Bowling::FIRST_FRAME..Bowling::MAX_FRAME).each do |frame|
 
   # インスタンス化
-  add_score = AddScore.new
+  add_score = bowling.add_score
+  # add_score = AddScore.new
   add_score.frame_score_to_total_scores #合計スコアにフレームスコアを入れていく
 
   # 加点処理開始
