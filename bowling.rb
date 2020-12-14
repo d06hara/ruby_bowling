@@ -9,7 +9,7 @@
 # -----ファイルの読み込み----------
 
 require './ball_throws_20201209.rb' #投球クラス
-require './add_score_20201213.rb' #加点クラス
+require './add_score_20201214.rb' #加点クラス
 
 # ------------------------------
 
@@ -38,7 +38,9 @@ end
 # -----メイン処理----------
 
 # 変数を準備
-total_score = []
+total_score = [] #加点後の合計スコア
+scores = [] #加点前のスコアの集まり
+
 
 bowling = Bowling.new
 
@@ -60,10 +62,10 @@ bowling = Bowling.new
   end
 
   # 合計スコアにフレームスコアを入れていく
-  ball_throw.scores_to_total_scores(total_score)
+  ball_throw.scores_to_total_scores(scores)
   # total_score = ball_throw.scores_to_total_scores
   puts ''
-  print total_score
+  print scores
 
   #  ---- 加点処理------
   # 加点クラスインスタンス生成
