@@ -4,7 +4,7 @@
 # total_scoresはscoresの集まり
 # 練習用スコア配列
 answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 10, 3], [10, 3, 3], [3, 3], [10, 10, 10], [10, 10, 8], [10, 8, 2]]
-total_score = [] #scoreの集まり
+added_total_score = [] #scoreの集まり
 scores = [[10],[8,2], [4, 5], [3, 7], [10], [10], [3, 3], [10], [10], [10, 8, 2]]
 
 #---------------------
@@ -24,7 +24,7 @@ class AddScore
   #インスタンス生成するたびに１をたす、初期値は1
   @@frame = 0
   # 初期化
-  def initialize(frame_score = [], total_score = [])
+  def initialize(frame_score = [], scores = [])
 
     #インスタンス生成するたびに１を足す
     @@frame += 1
@@ -35,15 +35,15 @@ class AddScore
 
     # フレームスコア
     @frame_score = frame_score
-    @now_frame_score = total_score[@@now_frame_index]
-    @before_frame_score = total_score[@@before_frame_index]
-    @two_before_frame_score = total_score[@@two_before_frame_index]
+    @now_frame_score = scores[@@now_frame_index]
+    @before_frame_score = scores[@@before_frame_index]
+    @two_before_frame_score = scores[@@two_before_frame_index]
 
   end
 
   # 合計スコアにフレームスコアを入れるメソッド
-  def frame_score_to_total_scores(total_score)
-    total_score.push(@now_frame_score)
+  def frame_score_to_total_scores(added_total_score)
+    added_total_score.push(@now_frame_score)
   end
 
   # 今のスコアの要素数チェック
@@ -96,18 +96,18 @@ class AddScore
   end
 
   # 前のフレームに現在の１投目を追加する(前のフレームがスペアだった場合orストライクで今回もストライクの場合)
-  def add_one_score_to_before_frame(total_score)
-    total_score[@@before_frame_index].push(@now_frame_score[0])
+  def add_one_score_to_before_frame(added_total_score)
+    added_total_score[@@before_frame_index].push(@now_frame_score[0])
   end
 
   # # ストライクの場合の加点（前のフレームスコアに現在の１投目と２投目を追加)
-  def add_two_score_to_two_before_frame(total_score)
-    total_score[@@before_frame_index].push(@now_frame_score[0]).push(@now_frame_score[1])
+  def add_two_score_to_two_before_frame(added_total_score)
+    added_total_score[@@before_frame_index].push(@now_frame_score[0]).push(@now_frame_score[1])
   end
 
   # ストライクの場合の加点（前のフレームスコアに現在の１投目と２投目を追加)
-  def add_one_score_to_two_before_frame(total_score)
-    total_score[@@two_before_frame_index].push(@now_frame_score[0])
+  def add_one_score_to_two_before_frame(added_total_score)
+    added_total_score[@@two_before_frame_index].push(@now_frame_score[0])
   end
 end
 
@@ -121,7 +121,7 @@ end
   # インスタンス化
   add_score = AddScore.new([], scores)
 
-  add_score.frame_score_to_total_scores(total_score) #合計スコアにフレームスコアを入れていく
+  add_score.frame_score_to_total_scores(added_total_score) #合計スコアにフレームスコアを入れていく
 
   # 加点処理開始
   # 最初のフレームは処理をnextする
@@ -133,22 +133,22 @@ end
 
   # 前のフレームがスペアだった場合、現在のフレームの1投目を追加
   if(add_score.before_spare?)
-    add_score.add_one_score_to_before_frame(total_score)
+    add_score.add_one_score_to_before_frame(added_total_score)
   end
 
   # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
   if(add_score.before_strike?)
-    (add_score.now_strike?) ? add_score.add_one_score_to_before_frame(total_score) : add_score.add_two_score_to_two_before_frame(total_score)
+    (add_score.now_strike?) ? add_score.add_one_score_to_before_frame(added_total_score) : add_score.add_two_score_to_two_before_frame(added_total_score)
   end
 
   # ３フレーム以降の処理
   if frame >= 3 && (add_score.two_before_double?)
-    add_score.add_one_score_to_two_before_frame(total_score)
+    add_score.add_one_score_to_two_before_frame(added_total_score)
   end
 
   # 確認用
   puts ''
-  print total_score
+  print added_total_score
   puts ''
 end
 print answer
