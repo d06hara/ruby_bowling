@@ -37,15 +37,19 @@ end
 
 # -----メイン処理----------
 
+# 変数を準備
+total_score = []
+
 bowling = Bowling.new
 
 (bowling.first_frame..bowling.last_frame).each do |frame|
 
-  # インスタンス化
+  # ----投球処理------
+  # 投球クラスインスタンス生成
   ball_throw = BallThrow.new
   # フレーム数によって最大投球数を変える
   max_throw = (ball_throw.last_frame?) ? 3 : 2
-
+  # 投げる
   (1..max_throw).each do |throws|
     ball_throw.calc_pins #残りの球を計算する
     ball_throw.one_throw #球を投げる
@@ -55,6 +59,19 @@ bowling = Bowling.new
     end
   end
 
+  # 合計スコアにフレームスコアを入れていく
+  ball_throw.scores_to_total_scores(total_score)
+  # total_score = ball_throw.scores_to_total_scores
   puts ''
-  print ball_throw.scores_to_total_scores
+  print total_score
+
+  #  ---- 加点処理------
+  # 加点クラスインスタンス生成
+  add_score = bowling.add_score
+  # 最初のフレームは処理をnextする
+  if frame == 1
+    next
+  end
+  # 前のフレームを確認する
+
 end

@@ -120,3 +120,43 @@ class AddScore
   end
 end
 
+
+# # -----メイン処理----------
+
+# bowling = Bowling.new
+
+# (bowling.first_frame..bowling.last_frame).each do |frame|
+
+#   # インスタンス化
+#   add_score = bowling.add_score
+#   # add_score = AddScore.new
+#   add_score.frame_score_to_total_scores #合計スコアにフレームスコアを入れていく
+
+#   # 加点処理開始
+#   # 最初のフレームは処理をnextする
+#   if frame == 1
+#     next
+#   end
+
+#   # 前のフレームを確認する
+
+#   # 前のフレームがスペアだった場合、現在のフレームの1投目を追加
+#   if(add_score.before_spare?)
+#     add_score.add_one_score_to_before_frame
+#   end
+
+#   # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
+#   if(add_score.before_strike?)
+#     (add_score.now_strike?) ? add_score.add_one_score_to_before_frame : add_score.add_two_score_to_two_before_frame
+#   end
+
+#   # ３フレーム以降の処理
+#   if frame >= 3 && (add_score.two_before_double?)
+#     add_score.add_one_score_to_two_before_frame
+#   end
+
+#   # 確認用
+#   AddScore.info
+# end
+# print answer
+

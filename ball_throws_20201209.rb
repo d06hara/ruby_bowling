@@ -17,7 +17,7 @@ class BallThrow
   SPARE_ELEMENTS = 2
 
   # クラス変数
-  @@total_scores = []
+  # @@total_scores = []
   @@total_frames = 0
 
   # 確認用のアクセサ
@@ -30,7 +30,7 @@ class BallThrow
     @score = score
     @scores = scores
     @remaining_pins = remaining_pins
-    @@total_scores
+    # @@total_scores
     # total_framesはインスタンス生成するたびに1をたす
     @@total_frames += 1
   end
@@ -46,9 +46,12 @@ class BallThrow
   end
 
   # フレームスコアを合計スコアに入れる
-  def scores_to_total_scores
-    @@total_scores.push(@scores)
+  def scores_to_total_scores(total_score)
+    total_score.push(@scores)
   end
+  # def scores_to_total_scores
+  #   @@total_scores.push(@scores)
+  # end
 
   # 残りのピンを計算する
   def calc_pins
