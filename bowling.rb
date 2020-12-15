@@ -1,15 +1,9 @@
 # ボウリングゲーム
 
-# --ルール
-# 全１０フレーム
-# 1~9フレーム：２投、10フレーム：３投
-# 1~9フレームは、ストライクだったら1投,1~9フレームは、ストライクだったら、後の2投を加算する,1~9フレームは、スペアだったら、後の1投を加算する
-# 10 フレームは、1,2投目で、10ピン倒したら、3投目が投げられる。
-
 # -----ファイルの読み込み----------
 
-require './ball_throws_20201209.rb' #投球クラス
-require './add_score_20201214.rb' #加点クラス
+require './ball_throws_20201215.rb' #投球クラス
+require './add_score_20201215.rb' #加点クラス
 
 # ------------------------------
 
@@ -28,18 +22,13 @@ class Bowling
     LAST_FRAME
   end
 
-  # AddScoreのインスタンス生成
-  def add_score
-    AddScore.new
-  end
-
 end
 
 # -----メイン処理----------
 
 # 変数を準備
-total_score = [] #加点前の合計スコア
-# scores = [] #加点前のスコアの集まり
+added_total_score = [] #加点前の合計スコア
+total_score = [] #加点前のスコアの集まり
 
 
 bowling = Bowling.new
@@ -61,21 +50,44 @@ bowling = Bowling.new
     end
   end
 
-  # 合計スコアにフレームスコアを入れていく
+  # 加点前合計スコアにフレームスコアを入れていく
   ball_throw.scores_to_total_scores(total_score)
 
   # total_score = ball_throw.scores_to_total_scores
   puts ''
-  print scores
+  # print scores
+  puts ''
+  print total_score
+  # puts added_total_score
 
   #  ---- 加点処理------
   # 加点クラスインスタンス生成
-  add_score = bowling.add_score(total_score)
+  add_score = AddScore.new([], total_score)
+
+  add_score.frame_score_to_total_scores(added_total_score) #合計スコアにフレームスコアを入れていく
+
   # 最初のフレームは処理をnextする
   if frame == 1
     next
   end
   # 前のフレームを確認する
-  
 
+  # 前のフレームがスペアだった場合、現在のフレームの1投目を追加
+  if(add_score.before_spare?)
+    add_score.add_one_score_to_before_frame(added_total_score)
+  end
+
+  # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
+  if(add_score.before_strike?)
+    (add_score.now_strike?) ? add_score.add_one_score_to_before_frame(added_total_score) : add_score.add_two_score_to_two_before_frame(added_total_score)
+  end
+
+  # ３フレーム以降の処理
+  if frame >= 3 && (add_score.two_before_double?)
+    add_score.add_one_score_to_two_before_frame(added_total_score)
+  end
+
+  puts ''
+  print added_total_score
+  puts ''
 end

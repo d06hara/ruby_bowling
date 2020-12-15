@@ -1,13 +1,6 @@
 #===================
-# 変数,定数
+# 加点クラス
 #===================
-# total_scoresはscoresの集まり
-# 練習用スコア配列
-answer = [[10, 8, 2], [8, 2, 4], [4, 5], [3, 7, 10], [10, 10, 3], [10, 3, 3], [3, 3], [10, 10, 10], [10, 10, 8], [10, 8, 2]]
-added_total_score = [] #scoreの集まり
-scores = [[10],[8,2], [4, 5], [3, 7], [10], [10], [3, 3], [10], [10], [10, 8, 2]]
-
-#---------------------
 
 class AddScore
 
@@ -21,7 +14,6 @@ class AddScore
   DOUBLE_ELEMENTS = 2
 
   # クラス変数（initialize後に値を保持)
-  #インスタンス生成するたびに１をたす、初期値は1
   @@frame = 0
   # 初期化
   def initialize(frame_score = [], scores = [])
@@ -110,46 +102,4 @@ class AddScore
     added_total_score[@@two_before_frame_index].push(@now_frame_score[0])
   end
 end
-
-
-# -----メイン処理----------
-
-# bowling = Bowling.new
-
-(1..10).each do |frame|
-
-  # インスタンス化
-  add_score = AddScore.new([], scores)
-
-  add_score.frame_score_to_total_scores(added_total_score) #合計スコアにフレームスコアを入れていく
-
-  # 加点処理開始
-  # 最初のフレームは処理をnextする
-  if frame == 1
-    next
-  end
-
-  # 前のフレームを確認する
-
-  # 前のフレームがスペアだった場合、現在のフレームの1投目を追加
-  if(add_score.before_spare?)
-    add_score.add_one_score_to_before_frame(added_total_score)
-  end
-
-  # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
-  if(add_score.before_strike?)
-    (add_score.now_strike?) ? add_score.add_one_score_to_before_frame(added_total_score) : add_score.add_two_score_to_two_before_frame(added_total_score)
-  end
-
-  # ３フレーム以降の処理
-  if frame >= 3 && (add_score.two_before_double?)
-    add_score.add_one_score_to_two_before_frame(added_total_score)
-  end
-
-  # 確認用
-  puts ''
-  print added_total_score
-  puts ''
-end
-print answer
 
