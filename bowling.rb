@@ -29,8 +29,7 @@ end
 # 変数を準備
 added_total_score = [] #加点前の合計スコア
 total_score = [] #加点前のスコアの集まり
-
-
+# インスタンス生成
 bowling = Bowling.new
 
 (bowling.first_frame..bowling.last_frame).each do |frame|
@@ -49,21 +48,13 @@ bowling = Bowling.new
       break
     end
   end
-
   # 加点前合計スコアにフレームスコアを入れていく
   ball_throw.scores_to_total_scores(total_score)
 
-  # total_score = ball_throw.scores_to_total_scores
-  puts ''
-  # print scores
-  puts ''
-  print total_score
-  # puts added_total_score
 
   #  ---- 加点処理------
   # 加点クラスインスタンス生成
   add_score = AddScore.new([], total_score)
-
   add_score.frame_score_to_total_scores(added_total_score) #合計スコアにフレームスコアを入れていく
 
   # 最初のフレームは処理をnextする
@@ -87,7 +78,8 @@ bowling = Bowling.new
     add_score.add_one_score_to_two_before_frame(added_total_score)
   end
 
-  puts ''
-  print added_total_score
-  puts ''
 end
+
+puts ''
+print added_total_score
+puts ''
