@@ -76,14 +76,7 @@ bowling = Bowling.new
 
 end
 
-##############################
-##ここでundefinedになるのはなぜ？
-##############################
-# puts ''
-# print manage_score.total_score #なぜか最後は表示されない
-# puts ''
-
 puts ''
 print bowling.total_score
+# print manage_score.total_score #直接表示させようとするとundefiendになるのはなぜ？
 puts ''
-
