@@ -17,6 +17,11 @@ class Bowling
     @two_before_frame_index = @before_frame_index - 1
   end
 
+  # １投目呼び出し
+  def first_throw
+    FIRST_THROW
+  end
+
   # 最初のフレーム 呼び出し
   def first_frame
     FIRST_FRAME

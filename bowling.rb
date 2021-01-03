@@ -25,7 +25,7 @@ bowling = Bowling.new
   #最大投球数
   last_throw = (frame == bowling.last_frame) ? 3 : 2
 
-  (Property::FIRST_THROW..last_throw).each do |throw|
+  (bowling.first_throw..last_throw).each do |throw|
     score.calc_remaining_pins(bowling.frame)  #場にあるピンを計算
     score.ball_throw #球を投げる
     score.score_to_frame_score #フレームスコアに入れる
