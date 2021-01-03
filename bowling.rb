@@ -18,15 +18,14 @@ bowling = Bowling.new
   bowling.frame = frame
 
   #投球処理
-  #インスタンス化
   score = Score.new
   judge_score = JudgeScore.new
   manage_score = ManageScore.new
 
   #最大投球数
-  max_throw = (frame == bowling.last_frame) ? 3 : 2
+  last_throw = (frame == bowling.last_frame) ? 3 : 2
 
-  (1..max_throw).each do |throw|
+  (Property::FIRST_THROW..last_throw).each do |throw|
     score.calc_remaining_pins(bowling.frame)  #場にあるピンを計算
     score.ball_throw #球を投げる
     score.score_to_frame_score #フレームスコアに入れる

@@ -13,5 +13,6 @@ module Property
   LAST_FRAME = 10
   ONE_THROW = 1
   TWO_THROW = 2
+  FIRST_THROW = 1
 
 end
