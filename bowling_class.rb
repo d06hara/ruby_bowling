@@ -1,7 +1,7 @@
 class Bowling
 
-  FIRST_FRAME = 1
-  LAST_FRAME = 10
+  # 定数をimport
+  include Property
 
   attr_accessor :total_score
   attr_accessor :frame
