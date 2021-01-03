@@ -41,7 +41,7 @@ bowling = Bowling.new
   #加点処理
 
   #1フレーム目はスキップ
-  if frame == 1
+  if frame == bowling.first_frame
     next
   end
 
