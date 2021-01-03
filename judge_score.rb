@@ -39,4 +39,10 @@ class JudgeScore
   def double?
     (sum_frame_score == DOUBLE) && (throw_count == TWO_THROW) ? true : false
   end
+
+  #最終フレームが２投でおわるパターンかの判定
+  def last_frame_two_throw?
+    (throw_count == TWO_THROW) && (sum_frame_score < SPARE) ? true : false
+  end
+  
 end

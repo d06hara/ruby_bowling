@@ -31,7 +31,7 @@ bowling = Bowling.new
     score.score_to_frame_score #フレームスコアに入れる
     judge_score.frame_score = score.frame_score #判定用クラスに読み込ませる
     # 投球を終わるか判定(最終フレームは２投の合計が10以下、それ以外のフレームはストライクの場合)
-    if(bowling.last_frame? && (judge_score.throw_count == Property::TWO_THROW && judge_score.sum_frame_score < Property::SPARE)) || (!(bowling.last_frame?) && judge_score.strike?)
+    if(bowling.last_frame? && judge_score.last_frame_two_throw?) || (!(bowling.last_frame?) && judge_score.strike?)
       break
     end
   end
