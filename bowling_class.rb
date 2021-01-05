@@ -10,11 +10,6 @@ class Bowling
   def initialize(total_score = [], frame = 1)
     @total_score = total_score
     @frame = frame
-
-    #インデックス用変数
-    @now_frame_index = @frame - 1
-    @before_frame_index = @now_frame_index - 1
-    @two_before_frame_index = @before_frame_index - 1
   end
 
   # １投目呼び出し
