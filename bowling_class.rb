@@ -32,4 +32,9 @@ class Bowling
     @frame == LAST_FRAME ? true : false
   end
 
+  #合計スコアを計算する
+  def sum_total_score
+    @total_score.flatten.sum
+  end
+
 end
