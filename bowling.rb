@@ -1,85 +1,85 @@
-# ボウリングゲーム
-
 # -----ファイルの読み込み----------
 
-require './ball_throws_20201215.rb' #投球クラス
-require './add_score_20201215.rb' #加点クラス
+require './property.rb' #定数のモジュール
+require './bowling_class.rb' #bowlingクラス
+require './score.rb' #scoreクラス
+require './judge_score.rb' #judge_scoreクラス
+require './manage_score.rb' #manage_scoreクラス
 
 # ------------------------------
 
-class Bowling
-
-  FIRST_FRAME = 1
-  LAST_FRAME = 10
-
-  # 最初のフレーム 呼び出し
-  def first_frame
-    FIRST_FRAME
-  end
-
-  #最終フレーム呼び出し
-  def last_frame
-    LAST_FRAME
-  end
-
-end
 
 # -----メイン処理----------
 
-# 変数を準備
-added_total_score = [] #加点前の合計スコア
-total_score = [] #加点前のスコアの集まり
-# インスタンス生成
 bowling = Bowling.new
 
 (bowling.first_frame..bowling.last_frame).each do |frame|
+  # フレームをクラスに読み込ませる
+  bowling.frame = frame
 
-  # ----投球処理------
-  # 投球クラスインスタンス生成
-  ball_throw = BallThrow.new
-  # フレーム数によって最大投球数を変える
-  max_throw = (ball_throw.last_frame?) ? 3 : 2
-  # 投げる
-  (1..max_throw).each do |throws|
-    ball_throw.calc_pins #残りの球を計算する
-    ball_throw.one_throw #球を投げる
-    ball_throw.fill_in_score #スコアを記入する
-    if (ball_throw.finish_frame?) #投球終了するかの判定
+  #投球処理
+  score = Score.new
+  judge_score = JudgeScore.new
+  manage_score = ManageScore.new
+
+  #最大投球数
+  last_throw = (frame == bowling.last_frame) ? 3 : 2
+
+  (bowling.first_throw..last_throw).each do |throw|
+    score.calc_remaining_pins(bowling.frame)  #場にあるピンを計算
+    score.ball_throw #球を投げる
+    score.score_to_frame_score #フレームスコアに入れる
+    judge_score.frame_score = score.frame_score #判定用クラスに読み込ませる
+    # 投球を終わるか判定(最終フレームは２投の合計が10以下、それ以外のフレームはストライクの場合)
+    if(bowling.last_frame? && judge_score.last_frame_two_throw?) || (!(bowling.last_frame?) && judge_score.strike?)
       break
     end
   end
-  # 加点前合計スコアにフレームスコアを入れていく
-  ball_throw.scores_to_total_scores(total_score)
 
+  manage_score.total_score.push(score.frame_score)
 
-  #  ---- 加点処理------
-  # 加点クラスインスタンス生成
-  add_score = AddScore.new([], total_score)
-  add_score.frame_score_to_total_scores(added_total_score) #合計スコアにフレームスコアを入れていく
+  #加点処理
 
-  # 最初のフレームは処理をnextする
-  if frame == 1
+  #1フレーム目はスキップ
+  if frame == bowling.first_frame
     next
   end
-  # 前のフレームを確認する
 
-  # 前のフレームがスペアだった場合、現在のフレームの1投目を追加
-  if(add_score.before_spare?)
-    add_score.add_one_score_to_before_frame(added_total_score)
+  #前のフレームスコアを確認する
+  #前のフレームがスペアだった場合、現在の１投目を追加
+  judge_score.frame_score = manage_score.before_frame_score
+  if(judge_score.spare?)
+    manage_score.before_frame_score.push(score.first_throw)
+
+  elsif(judge_score.strike?)
+    #現在のスコアをチェック
+    judge_score.frame_score = manage_score.now_frame_score
+    if(judge_score.strike?)
+      manage_score.before_frame_score.push(score.first_throw)
+    else
+      manage_score.before_frame_score.push(score.first_throw).push(score.second_throw)
+    end
   end
 
-  # # 前のフレームがストライクだった場合、現在のフレームの2投を追加、現在のフレームがストライクの場合は１投のみ追加
-  if(add_score.before_strike?)
-    (add_score.now_strike?) ? add_score.add_one_score_to_before_frame(added_total_score) : add_score.add_two_score_to_two_before_frame(added_total_score)
+  # ダブルのチェック
+  if frame >= 3
+    judge_score.frame_score = manage_score.two_before_frame_score
+    if(judge_score.double?)
+      manage_score.two_before_frame_score.push(score.first_throw)
+    end
   end
 
-  # ３フレーム以降の処理
-  if frame >= 3 && (add_score.two_before_double?)
-    add_score.add_one_score_to_two_before_frame(added_total_score)
+  #最終フレームでbowlingクラスに全て値を渡す(なぜかループを抜けた後にundefiendになるから)
+  if frame == bowling.last_frame
+    bowling.total_score = manage_score.total_score
   end
 
 end
 
 puts ''
-print added_total_score
+print bowling.total_score
+# print manage_score.total_score #直接表示させようとするとundefiendになるのはなぜ？
 puts ''
+puts bowling.sum_total_score
+
+bowling.score_board

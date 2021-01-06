@@ -1,0 +1,18 @@
+# 定数をまとめる
+module Property
+  
+  MAX_PINS = 10
+  STRIKE = 10
+  SPARE = 10
+  STRIKE_OR_SPARE = 10
+  DOUBLE = 20
+  SPARE_ELEMENTS = 2
+  STRIKE_ELEMENT = 1
+  DOUBLE_ELEMENTS = 2
+  FIRST_FRAME = 1
+  LAST_FRAME = 10
+  ONE_THROW = 1
+  TWO_THROW = 2
+  FIRST_THROW = 1
+
+end
